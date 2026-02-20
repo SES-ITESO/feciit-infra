@@ -51,6 +51,12 @@ variable "swa_api_location" {
   default     = ""
 }
 
+variable "swa_github_token" {
+  type        = string
+  description = "GitHub Personal Access Token (PAT) so Azure can configure your repository workflow"
+  sensitive   = true
+}
+
 variable "enable_custom_domain" {
   type        = bool
   description = "Whether to provision the custom domain for the SWA"
@@ -85,3 +91,28 @@ variable "monitor_users_password" {
   description = "Password for the read-only monitoring users"
   sensitive   = true
 }
+
+# ==========================================
+# Nuxt Environment Variables
+# ==========================================
+variable "better_auth_secret" {
+  type        = string
+  sensitive   = true
+}
+variable "better_auth_url" { type = string }
+
+variable "seed_admin_email" { type = string }
+variable "seed_admin_name" { type = string }
+variable "seed_admin_password" {
+  type        = string
+  sensitive   = true
+}
+
+variable "nuxt_mail_host" { type = string }
+variable "nuxt_mail_port" { type = string }
+variable "nuxt_mail_user" { type = string }
+variable "nuxt_mail_pass" {
+  type        = string
+  sensitive   = true
+}
+variable "nuxt_mail_from" { type = string }

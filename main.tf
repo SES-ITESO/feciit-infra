@@ -22,7 +22,26 @@ resource "azurerm_static_web_app" "swa" {
   sku_size            = "Standard"
   sku_tier            = "Standard"
   tags                = local.tags
-  app_settings = {}
+
+  # Link the SWA directly to GitHub for automatic CI/CD
+  repository_url   = var.swa_repo_url
+  branch           = var.swa_branch
+  repository_token = var.swa_github_token
+
+  # Inject Secrets & Environment Variables into the Nuxt Backend
+  app_settings = {
+    DATABASE_URL        = "postgresql://${var.db_admin_user}:${var.db_admin_password}@${azurerm_postgresql_flexible_server.postgres.fqdn}:5432/${azurerm_postgresql_flexible_server_database.feciit_db.name}?sslmode=require"
+    BETTER_AUTH_SECRET  = var.better_auth_secret
+    BETTER_AUTH_URL     = var.better_auth_url
+    SEED_ADMIN_EMAIL    = var.seed_admin_email
+    SEED_ADMIN_NAME     = var.seed_admin_name
+    SEED_ADMIN_PASSWORD = var.seed_admin_password
+    NUXT_MAIL_HOST      = var.nuxt_mail_host
+    NUXT_MAIL_PORT      = var.nuxt_mail_port
+    NUXT_MAIL_USER      = var.nuxt_mail_user
+    NUXT_MAIL_PASS      = var.nuxt_mail_pass
+    NUXT_MAIL_FROM      = var.nuxt_mail_from
+  }
 }
 
 resource "azurerm_static_web_app_custom_domain" "swa_domain" {
@@ -149,6 +168,13 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure_interna
   server_id        = azurerm_postgresql_flexible_server.postgres.id
   start_ip_address = "0.0.0.0"
   end_ip_address   = "0.0.0.0"
+}
+
+resource "azurerm_postgresql_flexible_server_database" "feciit_db" {
+  name      = "feciit"
+  server_id = azurerm_postgresql_flexible_server.postgres.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
 }
 
 # -----------------------------------------------------------------------------
