@@ -20,3 +20,12 @@ output "postgres_fqdn" {
   description = "The fully qualified domain name of the PostgreSQL flexible server"
   sensitive   = true
 }
+
+# ==========================================
+# Output the Deployment Token for GitHub
+# ==========================================
+output "swa_api_deployment_token" {
+  value       = azurerm_static_web_app.swa.api_key
+  description = "The deployment token needed for GitHub Actions to deploy your Nuxt app."
+  sensitive   = true
+}

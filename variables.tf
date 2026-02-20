@@ -22,40 +22,7 @@ variable "project" {
   default     = "feciit"
 }
 
-variable "swa_repo_url" {
-  type        = string
-  description = "GitHub repository URL for the Static Web App"
-}
 
-variable "swa_branch" {
-  type        = string
-  description = "Branch to deploy for the Static Web App"
-  default     = "main"
-}
-
-variable "swa_app_location" {
-  type        = string
-  description = "Location of the application code in the repository"
-  default     = "/"
-}
-
-variable "swa_output_location" {
-  type        = string
-  description = "Location of the built application assets"
-  default     = ".output/public"
-}
-
-variable "swa_api_location" {
-  type        = string
-  description = "Location of the API code in the repository"
-  default     = ""
-}
-
-variable "swa_github_token" {
-  type        = string
-  description = "GitHub Personal Access Token (PAT) so Azure can configure your repository workflow"
-  sensitive   = true
-}
 
 variable "enable_custom_domain" {
   type        = bool

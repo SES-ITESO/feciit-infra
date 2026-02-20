@@ -24,9 +24,8 @@ resource "azurerm_static_web_app" "swa" {
   tags                = local.tags
 
   # Link the SWA directly to GitHub for automatic CI/CD
-  repository_url   = var.swa_repo_url
-  branch           = var.swa_branch
-  repository_token = var.swa_github_token
+  # Note: The AzureRM Terraform provider manages the SWA structure, but linking the repo directly 
+  # here is no longer supported directly via these flags. See the output variable instead.
 
   # Inject Secrets & Environment Variables into the Nuxt Backend
   app_settings = {
