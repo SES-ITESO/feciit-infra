@@ -18,7 +18,7 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_static_web_app" "swa" {
   name                = "stapp-${var.project}-${var.environment}"
   resource_group_name = azurerm_resource_group.rg.name
-  location            = "eastus2" 
+  location            = azurerm_resource_group.rg.location
   sku_size            = "Standard"
   sku_tier            = "Standard"
   tags                = local.tags
@@ -160,6 +160,13 @@ resource "azurerm_postgresql_flexible_server" "postgres" {
 
   backup_retention_days        = 7
   geo_redundant_backup_enabled = false # Geo-redundant backups are not supported on Burstable SKUs
+
+  lifecycle {
+    ignore_changes = [
+      zone,
+      high_availability.0.standby_availability_zone
+    ]
+  }
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure_internal" {
@@ -227,30 +234,6 @@ resource "azurerm_consumption_budget_resource_group" "budget" {
 # -----------------------------------------------------------------------------
 # 5. Azure Monitor — Operational Alerts
 # -----------------------------------------------------------------------------
-# SWA Availability
-resource "azurerm_monitor_metric_alert" "swa_5xx" {
-  name                = "alert-swa-5xx-errors"
-  resource_group_name = azurerm_resource_group.rg.name
-  scopes              = [azurerm_static_web_app.swa.id]
-  description         = "Triggers when SWA Http5xxErrors > 10 in 5 mins"
-  severity            = 1
-  frequency           = "PT5M"
-  window_size         = "PT5M"
-  tags                = local.tags
-
-  criteria {
-    metric_namespace = "Microsoft.Web/staticSites"
-    metric_name      = "Http5xxErrors"
-    aggregation      = "Total"
-    operator         = "GreaterThan"
-    threshold        = 10
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.alerts.id
-  }
-}
-
 # PostgreSQL Availability
 resource "azurerm_monitor_metric_alert" "pg_availability" {
   name                = "alert-pg-down"
