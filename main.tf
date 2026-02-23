@@ -24,7 +24,7 @@ resource "azurerm_static_web_app" "swa" {
   tags                = local.tags
 
   # Link the SWA directly to GitHub for automatic CI/CD
-  # Note: The AzureRM Terraform provider manages the SWA structure, but linking the repo directly 
+  # Note: The AzureRM Terraform provider manages the SWA structure, but linking the repo directly
   # here is no longer supported directly via these flags. See the output variable instead.
 
   # Inject Secrets & Environment Variables into the Nuxt Backend
@@ -48,6 +48,13 @@ resource "azurerm_static_web_app_custom_domain" "swa_domain" {
   static_web_app_id = azurerm_static_web_app.swa.id
   domain_name       = var.swa_custom_domain
   validation_type   = "cname-delegation"
+}
+
+resource "azurerm_static_web_app_custom_domain" "swa_naked_domain" {
+  count             = var.enable_custom_domain ? 1 : 0
+  static_web_app_id = azurerm_static_web_app.swa.id
+  domain_name       = var.swa_naked_domain
+  validation_type   = "dns-txt-token"
 }
 
 # -----------------------------------------------------------------------------
@@ -168,6 +175,14 @@ resource "azurerm_postgresql_flexible_server" "postgres" {
     ]
   }
 }
+
+resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_personal_ip" {
+  name             = "AllowPersonalIP"
+  server_id        = azurerm_postgresql_flexible_server.postgres.id
+  start_ip_address = var.personal_ip
+  end_ip_address   = var.personal_ip
+}
+
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure_internal" {
   name             = "AllowAzureInternal"

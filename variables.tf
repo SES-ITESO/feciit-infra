@@ -36,6 +36,12 @@ variable "swa_custom_domain" {
   default     = "www.example.com"
 }
 
+variable "swa_naked_domain" {
+  type        = string
+  description = "Naked domain associated with the SWA (required if enable_custom_domain is true)"
+  default     = "example.com"
+}
+
 variable "db_admin_user" {
   type        = string
   description = "Administrator login for PostgreSQL Flexible Server"
@@ -63,23 +69,28 @@ variable "monitor_users_password" {
 # Nuxt Environment Variables
 # ==========================================
 variable "better_auth_secret" {
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 variable "better_auth_url" { type = string }
 
 variable "seed_admin_email" { type = string }
 variable "seed_admin_name" { type = string }
 variable "seed_admin_password" {
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
 variable "nuxt_mail_host" { type = string }
 variable "nuxt_mail_port" { type = string }
 variable "nuxt_mail_user" { type = string }
 variable "nuxt_mail_pass" {
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 variable "nuxt_mail_from" { type = string }
+
+variable "personal_ip" {
+  type        = string
+  description = "personal IP address for pgAdmin access"
+}

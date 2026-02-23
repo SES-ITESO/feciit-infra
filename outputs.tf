@@ -26,3 +26,9 @@ output "swa_api_deployment_token" {
   description = "The deployment token needed for GitHub Actions to deploy your Nuxt app."
   sensitive   = true
 }
+
+output "swa_naked_domain_token" {
+  description = "Validation token needed for the naked domain TXT record to prove ownership"
+  value       = length(azurerm_static_web_app_custom_domain.swa_naked_domain) > 0 ? azurerm_static_web_app_custom_domain.swa_naked_domain[0].validation_token : null
+  sensitive   = true
+}
